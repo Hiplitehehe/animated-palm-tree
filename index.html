@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Login</title>
+</head>
+<body>
+    <h1>GitHub Login with JWT</h1>
+    <button id="github-login">Login with GitHub</button>
+    <p id="message"></p>
+    <script>
+        document.getElementById("github-login").addEventListener("click", async () => {
+            try {
+                const response = await fetch("http://localhost:5000/api/auth/github");
+                const data = await response.json();
+                window.location.href = data.auth_url;
+            } catch (error) {
+                document.getElementById("message").textContent = "Error initiating login.";
+            }
+        });
+
+        // Check if redirected from GitHub with a code
+        async function checkGitHubCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+
+            if (code) {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/auth/github/callback?code=${code}`);
+                    const data = await response.json();
+
+                    if (data.token) {
+                        localStorage.setItem("jwt", data.token);
+                        document.getElementById("message").textContent = `Logged in as ${data.user.name}`;
+                    } else {
+                        document.getElementById("message").textContent = "Login failed.";
+                    }
+                } catch (error) {
+                    document.getElementById("message").textContent = "Error logging in.";
+                }
+            }
+        }
+
+        checkGitHubCallback();
+    </script>
+</body>
+</html>
