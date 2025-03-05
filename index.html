@@ -13,7 +13,7 @@
     <script>
         document.getElementById("github-login").addEventListener("click", async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/auth/github");
+                const response = await fetch("http://n9.mcst.io:35834/api/auth/github");
                 const data = await response.json();
                 window.location.href = data.auth_url;
             } catch (error) {
@@ -28,7 +28,7 @@
 
             if (code) {
                 try {
-                    const response = await fetch(`http://localhost:5000/api/auth/github/callback?code=${code}`);
+                    const response = await fetch(`http://n9.mcst.io:35834/api/auth/github/callback?code=${code}`);
                     const data = await response.json();
 
                     if (data.token) {
